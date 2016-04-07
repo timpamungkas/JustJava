@@ -26,7 +26,7 @@ public class MainActivity extends ActionBarActivity {
     public void submitOrder(View view) {
 //        display(quantity);
 //        displayPrice(quantity * 5);
-        displayMessage("Tank you");
+        displayMessage("Thank you");
     }
 
     private void displayMessage(String message) {
