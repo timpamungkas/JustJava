@@ -1,5 +1,7 @@
 package com.example.android.justjava;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -34,7 +36,7 @@ public class MainActivity extends ActionBarActivity {
         this.isWhippedCream = chkWhippedCream.isChecked();
         this.isChocolateCream = chkChocolateCream.isChecked();
 
-        sb.append("Name : " + txtName);
+        sb.append("Name : " + txtName.getText());
         sb.append(LS);
         sb.append("Use whipped cream : " + isWhippedCream);
         sb.append(LS);
@@ -54,7 +56,21 @@ public class MainActivity extends ActionBarActivity {
      */
     public void submitOrder(View view) {
         String summary = createOrderSummary(this.quantity);
-        displayMessage(summary);
+//        displayMessage(summary);
+        sendEmail(summary);
+    }
+
+    private void sendEmail(String summary) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setType("text/plain");
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"timotius.pamungkas@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Coffee Order");
+        intent.putExtra(Intent.EXTRA_TEXT, summary);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     private void displayMessage(String message) {
@@ -63,7 +79,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void increment(View view) {
-        this.quantity++;
+        if (this.quantity < 100) {
+            this.quantity++;
+        }
 
         display(this.quantity);
     }
@@ -77,7 +95,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private int calculatePrice(int cups) {
-        return cups * 5;
+        int price = 5;
+
+        if (this.isChocolateCream) {
+            price += 2;
+        }
+
+        if (this.isWhippedCream) {
+            price += 1;
+        }
+
+        return cups * price;
     }
 
     /**
@@ -89,4 +117,12 @@ public class MainActivity extends ActionBarActivity {
         quantityTextView.setText("" + number);
     }
 
+    public void showMap(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("geo:-6.415804, 106.762691"));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+
+    }
 }
